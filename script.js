@@ -20,54 +20,49 @@ let current = 0;
 
 document.addEventListener("DOMContentLoaded", () => {
     
+    // ==================== PROTEKSI LINK SOSMED EXTERNAL ====================
+    // Memastikan link sosmed di footer tidak diganggu oleh event JS lainnya
+    const footerLinks = document.querySelectorAll(".footer-socials a");
+    footerLinks.forEach(link => {
+        link.addEventListener("click", (e) => {
+            e.stopPropagation(); // Stop JS mengintervensi link ini
+        });
+    });
+
     // ==================== LOGIKA HERO CAROUSEL ====================
     const hero = document.querySelector(".hero");
     const title = document.querySelector("h1");
     const subtitle = document.querySelector("p");
 
-   function updateSlide() {
-    if (!hero || !title || !subtitle) return;
-    
-    // ==================== A. ANIMASI TEKS (SUDAH JALAN) ====================
-    title.classList.remove("fade-animation");
-    subtitle.classList.remove("fade-animation");
-    void title.offsetWidth; // Trigger reflow
-    void subtitle.offsetWidth;
-
-    title.textContent = slides[current].title;
-    subtitle.textContent = slides[current].subtitle;
-    
-    title.classList.add("fade-animation");
-    subtitle.classList.add("fade-animation");
-
-
-    // ==================== B. FIX ANIMASI GAMBAR (SOLUSI RUSAK) ====================
-    // 1. Buat object gambar sementara di memori (tersembunyi)
-    const tempImage = new Image();
-    
-    // 2. Siapkan URL gambar baru
-    const newImageUrl = slides[current].image;
-
-    // 3. EVENT: KETIKA GAMBAR BARU SUDAH SELESAI DIMUAT
-    tempImage.onload = function() {
-        // Gambar sudah siap di cache browser! 
+    function updateSlide() {
+        if (!hero || !title || !subtitle) return;
         
-        // Buat background .hero memudar sejenak sebelum diganti (opsional agar lebih dramatis)
-        hero.style.transition = 'background 0s'; // Reset transisi dulu agar tidak bentrok
-        hero.style.opacity = '0.9'; // Sedikit menggelap/memudar
+        title.classList.remove("fade-animation");
+        subtitle.classList.remove("fade-animation");
+        void title.offsetWidth; // Trigger reflow
+        void subtitle.offsetWidth;
 
-        // Trik memicu transisi halus
-        setTimeout(() => {
-            // Pasang gambar baru (yang sudah dimuat sempurna)
-            hero.style.transition = 'background 0.8s ease-in-out, opacity 0.5s'; // Pasang transisi halus
-            hero.style.background = `linear-gradient(rgba(0,0,0,.25), rgba(0,0,0,.25)), url(${newImageUrl}) center/cover`;
-            hero.style.opacity = '1'; // Munculkan penuh kembali
-        }, 50); // Delay sangat singkat
-    };
+        title.textContent = slides[current].title;
+        subtitle.textContent = slides[current].subtitle;
+        
+        title.classList.add("fade-animation");
+        subtitle.classList.add("fade-animation");
 
-    // 4. Masukkan URL ke object gambar sementara untuk mulai memuat (trigger download)
-    tempImage.src = newImageUrl;
-}
+        const tempImage = new Image();
+        const newImageUrl = slides[current].image;
+
+        tempImage.onload = function() {
+            hero.style.transition = 'background 0s'; 
+            hero.style.opacity = '0.9'; 
+
+            setTimeout(() => {
+                hero.style.transition = 'background 0.8s ease-in-out, opacity 0.5s'; 
+                hero.style.background = `linear-gradient(rgba(0,0,0,.25), rgba(0,0,0,.25)), url(${newImageUrl}) center/cover`;
+                hero.style.opacity = '1'; 
+            }, 50); 
+        };
+        tempImage.src = newImageUrl;
+    }
 
     const leftBtn = document.querySelector(".left-btn");
     const rightBtn = document.querySelector(".right-btn");
@@ -442,6 +437,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
+    // FIX TERHADAP STRUKTUR KURUNG TUTUP YANG SALAH LETAK
     if (cartItemsContainer) {
         cartItemsContainer.addEventListener('click', (e) => {
             const removeBtn = e.target.closest('.remove-cart-item-btn');
@@ -451,21 +447,18 @@ document.addEventListener("DOMContentLoaded", () => {
                 localStorage.setItem("cartData", JSON.stringify(cartItems));
                 renderCart();
             }
+        });
+    }
+
     // ==================== EVENT LISTENER TOMBOL ADMIN REPORT ====================
     const adminReportBtn = document.getElementById("adminReportBtn");
     if (adminReportBtn) {
         adminReportBtn.onclick = (e) => {
-            e.preventDefault(); // Cegah error bawaan browser
-            
-            // Panggil fungsi download CSV yang ada di paling bawah luar scope
+            e.preventDefault(); 
             downloadSalesReportCSV();
-            
-            // Tutup sidebar otomatis setelah diklik
             if (sidebar) sidebar.classList.remove("active");
             if (overlay) overlay.classList.remove("active");
         };
-    }
-        });
     }
 
     const clearAllCartBtn = document.querySelector('.clear-all-cart-btn');
@@ -540,10 +533,8 @@ document.addEventListener("DOMContentLoaded", () => {
                     return;
                 }
 
-                // Ambil rekaman laporan penjualan yang sudah ada, atau buat baru
                 let currentSales = JSON.parse(localStorage.getItem("salesData")) || [];
 
-                // Masukkan data barang dari keranjang ke laporan transaksi penjualan
                 cartItems.forEach(item => {
                     const numericPrice = parseInt(item.price.replace(/[^0-9]/g, '')) || 0;
                     
