@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kicksoul Clone</title>
+
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+</head>
+<body>
+
+<div class="sidebar" id="sidebarMenu">
+    <div class="close-btn" id="closeMenuBtn">
+        <i class="fa-solid fa-xmark"></i>
+    </div>
+    
+    <ul class="sidebar-links">
+        <li class="active-link"><a href="#">HOME <i class="fa-solid fa-house"></i></a></li>
+        <li><a href="#about-section">ABOUT US <i class="fa-regular fa-circle-info"></i></a></li>
+        <li><a href="products.html">OUR BRANDS <i class="fa-solid fa-chevron-down"></i></a></li>
+        <li><a href="products.html#apparel-section">APPAREL <i class="fa-solid fa-chevron-down"></i></a></li>
+        <li><a href="#hottest-drops">NEW DROPS <i class="fa-solid fa-bolt"></i></a></li>
+        <li><a href="#footer-section">CONTACT <i class="fa-solid fa-headset"></i></a></li>
+        
+        <li style="margin-top: 20px; border-top: 1px solid #1a1a1a; padding-top: 15px;">
+            <span onclick="eksekusiDownloadCSVLangsung()" style="color: #00cfff; font-weight: bold; cursor: pointer; display: flex; justify-content: space-between; align-items: center; text-transform: uppercase;">
+                DOWNLOAD REPORT <i class="fa-solid fa-file-csv"></i>
+            </span>
+        </li>
+    </ul>
+
+    <script>
+        function eksekusiDownloadCSVLangsung() {
+            try {
+                const dataPenjualan = JSON.parse(localStorage.getItem("salesData")) || [];
+
+                if (dataPenjualan.length === 0) {
+                    alert("Belum ada data penjualan yang terekam! Silakan lakukan simulasi transaksi checkout sampai sukses terlebih dahulu.");
+                    return;
+                }
+
+                const headers = ["Tanggal Transaksi", "Nama Pembeli", "No HP", "Alamat", "Nama Produk", "Varian", "Ukuran", "Harga Satuan", "Jumlah Beli", "Total Harga", "Metode Pembayaran"];
+                const barisCsv = [];
+                barisCsv.push(headers.join(",")); 
+
+                dataPenjualan.forEach(row => {
+                    const values = [
+                        `"${row.tanggal || ''}"`,
+                        `"${row.namaPembeli || ''}"`,
+                        `"${row.noHp || ''}"`,
+                        `"${row.alamat || ''}"`,
+                        `"${row.namaProduk || ''}"`,
+                        `"${row.varian || ''}"`,
+                        `"${row.ukuran || ''}"`,
+                        row.hargaSatuan || 0,
+                        row.jumlah || 0,
+                        row.totalHarga || 0,
+                        `"${row.metodeBayar || ''}"`
+                    ];
+                    barisCsv.push(values.join(","));
+                });
+
+                const kontenCsv = "\uFEFF" + barisCsv.join("\n");
+                const blob = new Blob([kontenCsv], { type: 'text/csv;charset=utf-8;' });
+                const url = URL.createObjectURL(blob);
+                
+                const linkDownload = document.createElement("a");
+                linkDownload.setAttribute("href", url);
+                linkDownload.setAttribute("download", "Laporan_Penjualan_Kicksoul_" + new Date().toISOString().split('T')[0] + ".csv");
+                linkDownload.style.display = 'none';
+                
+                document.body.appendChild(linkDownload);
+                linkDownload.click();
+                document.body.removeChild(linkDownload);
+
+                const sidebarMenu = document.getElementById("sidebarMenu");
+                const sidebarOverlay = document.getElementById("sidebarOverlay");
+                if (sidebarMenu) sidebarMenu.classList.remove("active");
+                if (sidebarOverlay) sidebarOverlay.classList.remove("active");
+
+            } catch (error) {
+                alert("Terjadi kesalahan: " + error.message);
+            }
+        }
+    </script>
+</div>
+
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <div class="top-bar">
+        GRATIS ONGKIR SELURUH INDONESIA MINIMAL BELANJA RP 500.000
+    </div>
+
+    <nav class="navbar">
+        <div class="menu-btn" id="openMenuBtn">
+            <i class="fa-solid fa-bars"></i>
+        </div>
+
+        <div class="logo">
+            KICK<span>SOUL</span>
+        </div>
+
+        <div class="nav-icons">
+            <div class="wishlist-nav-btn" id="openWishlistBtn">
+                <i class="fa-regular fa-heart"></i>
+                <span class="wishlist-text">WISHLIST</span>
+            </div>
+            
+            <div class="cart-nav-btn" id="openCartBtn">
+                <i class="fa-solid fa-bag-shopping"></i>
+                <span class="cart-text">CART</span>
+            </div>
+        </div>
+    </nav>
+
+    <div class="cart-panel" id="cartPanel">
+        <div class="cart-header">
+            <h2>SHOPPING CART</h2>
+            <div class="cart-header-right">
+                <button class="clear-all-cart-btn">Clear All</button>
+                <i class="fa-solid fa-xmark close-cart-panel-btn" id="closeCartPanelBtn"></i>
+            </div>
+        </div>
+
+        <div class="cart-content-empty">
+            <div class="empty-cart-icon">
+                <i class="fa-solid fa-bag-shopping"></i>
+            </div>
+            <h3>Your Cart is Empty</h3>
+            <p>Start shopping your favorite sneakers.</p>
+        </div>
+
+        <div class="cart-footer">
+            <div class="cart-total-row">
+                <span>Total</span>
+                <span class="total-price">Rp 0</span>
+            </div>
+            <button class="checkout-btn">Checkout</button>
+        </div>
+    </div>
+
+    <section class="hero">
+        <button class="slide-btn left-btn">
+            <i class="fa-solid fa-chevron-left"></i>
+        </button>
+
+        <div class="hero-content">
+            <h1>PATROBAS</h1>
+            <p>Reborn Low Reflective</p>
+            <!-- DIARAHKAN KE HOTTEST DROPS SESUAI KETERANGAN GAMBAR PERTAMA -->
+            <a href="#hottest-drops"><button class="shop-btn">SHOP NOW</button></a>
+        </div>
+
+        <button class="slide-btn right-btn">
+            <i class="fa-solid fa-chevron-right"></i>
+        </button>
+    </section>
+
+    <section class="about" id="about-section">
+        <div class="about-card">
+            <span class="about-label">ABOUT KICKSOUL</span>
+            <h2>Your Trusted Local Sneakers Destination</h2>
+            <p>
+                KICKSOUL Official Store offers a curated collection of sneakers and apparel
+                from Indonesia's finest local brands. We believe local products can stand
+                alongside international names through quality, creativity, and innovation.
+                Our mission is to support local craftsmanship and inspire more people to
+                take pride in wearing products made by the nation's best creators.
+            </p>
+        </div>
+
+        <!-- MENGARAHKAN TOMBOL BRAND KE ELEMEN PROD-PAGE RELEVAN SESUAI GAMBAR KEDUA -->
+        <div class="brand-list">
+            <a href="products.html#compass-section"><button>COMPASS</button></a>
+            <a href="products.html#patrobas-section"><button>PATROBAS</button></a>
+            <a href="products.html#aerostreet-section"><button>AEROSTREET</button></a>
+            <a href="products.html#geoffmax-section"><button>GEOFF MAX FOOTWEAR</button></a>
+            <a href="products.html#piero-section"><button>PIERO</button></a>
+        </div>
+    </section>
+
+    <section class="category-section">
+        <div class="category-grid">
+            <div class="category-card sneakers">
+                <img src="assets/patrobas-nomad.png" alt="Sneakers">
+                <div class="category-content">
+                    <h2>THE SNEAKERS</h2>
+                    <p>Koleksi sepatu lokal premium.</p>
+                    <a href="products.html" class="shop-btn">SHOP NOW ↗</a>
+                </div>
+            </div>
+
+            <div class="category-card apparel">
+                <img src="assets/sompass-t-shirt.png" alt="Apparel">
+                <div class="category-content">
+                    <h2>APPAREL</h2>
+                    <a href="products.html#apparel-section" class="shop-btn">SHOP NOW ↗</a>
+                </div>
+            </div>
+
+            <div class="category-card slipon">
+                <img src="assets/patrobas-flip.png" alt="Slip On">
+                <div class="category-content">
+                    <h2>SLIP ON</h2>
+                    <a href="products.html" class="shop-btn">SHOP NOW ↗</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="products-section" id="hottest-drops">
+        <div class="section-header">
+            <span class="sub-title">PRODUK TERBARU</span>
+            <h2 class="main-title">Hottest Drops</h2>
+        </div>
+
+        <div class="products-container">
+            <button class="arrow-btn prod-left-btn"><i class="fa-solid fa-chevron-left"></i></button>
+
+            <div class="products-slider">
+                
+                <div class="product-card">
+                    <div class="img-wrapper">
+                        <span class="badge-best">BEST SELLER</span>
+                        <img src="assets/compass-tribune.png"" alt="Compass Tribune">
+                    </div>
+                    <div class="product-info">
+                        <span class="brand-name">COMPASS</span>
+                        <h3>Tribune</h3>
+                        <span class="price">Rp 598.000</span>
+                        <div class="rating-sold">
+                            <span class="rating"><i class="fa-solid fa-star"></i> 4.8</span>
+                            <span class="sold">• 22k sold</span>
+                        </div>
+                        <div class="action-buttons">
+                            <button class="wishlist-btn"><i class="fa-regular fa-heart"></i></button>
+                            <button class="add-bag-btn">Add To Bag</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="product-card">
+                    <div class="img-wrapper">
+                        <img src="assets/piero-DBR Unite.png" alt="Piero Jogger">
+                    </div>
+                    <div class="product-info">
+                        <span class="brand-name">PIERO</span>
+                        <h3>Sneakers Pria Jogger</h3>
+                        <span class="price">Rp 424.800</span>
+                        <div class="rating-sold">
+                            <span class="rating"><i class="fa-solid fa-star"></i> 4.7</span>
+                            <span class="sold">• 3.5k sold</span>
+                        </div>
+                        <div class="action-buttons">
+                            <button class="wishlist-btn"><i class="fa-regular fa-heart"></i></button>
+                            <button class="add-bag-btn">Add To Bag</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="product-card">
+                    <div class="img-wrapper">
+                        <img src="assets/patrobas-bulky.png" alt="Patrobas Bulky">
+                    </div>
+                    <div class="product-info">
+                        <span class="brand-name">PATROBAS</span>
+                        <h3>Bulky</h3>
+                        <span class="price">Rp 389.900</span>
+                        <div class="rating-sold">
+                            <span class="rating"><i class="fa-solid fa-star"></i> 4.7</span>
+                            <span class="sold">• 1.5k sold</span>
+                        </div>
+                        <div class="action-buttons">
+                            <button class="wishlist-btn"><i class="fa-regular fa-heart"></i></button>
+                            <button class="add-bag-btn">Add To Bag</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="product-card">
+                    <div class="img-wrapper">
+                        <img src="assets/aerostreet-denversneakers.png" alt="Aerostreet Denver">
+                    </div>
+                    <div class="product-info">
+                        <span class="brand-name">AEROSTREET</span>
+                        <h3>Denver Sneakers</h3>
+                        <span class="price">Rp 229.900</span>
+                        <div class="rating-sold">
+                            <span class="rating"><i class="fa-solid fa-star"></i> 4.8</span>
+                            <span class="sold">• 22k sold</span>
+                        </div>
+                        <div class="action-buttons">
+                            <button class="wishlist-btn"><i class="fa-regular fa-heart"></i></button>
+                            <button class="add-bag-btn">Add To Bag</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="product-card">
+                    <div class="img-wrapper">
+                        <img src="assets/compass-velocity.jpg" alt="Neo Classic">
+                    </div>
+                    <div class="product-info">
+                        <span class="brand-name">PATROBAS</span>
+                        <h3>Neo Classic</h3>
+                        <span class="price">Rp 359.000</span>
+                        <div class="rating-sold">
+                            <span class="rating"><i class="fa-solid fa-star"></i> 4.7</span>
+                            <span class="sold">• 2k sold</span>
+                        </div>
+                        <div class="action-buttons">
+                            <button class="wishlist-btn"><i class="fa-regular fa-heart"></i></button>
+                            <button class="add-bag-btn">Add To Bag</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="product-card">
+                    <div class="img-wrapper">
+                        <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff" alt="Patrobas Reborn">
+                    </div>
+                    <div class="product-info">
+                        <span class="brand-name">PATROBAS</span>
+                        <h3>Reborn Low Black</h3>
+                        <span class="price">Rp 279.000</span>
+                        <div class="rating-sold">
+                            <span class="rating"><i class="fa-solid fa-star"></i> 4.9</span>
+                            <span class="sold">• 4.1k sold</span>
+                        </div>
+                        <div class="action-buttons">
+                            <button class="wishlist-btn"><i class="fa-regular fa-heart"></i></button>
+                            <button class="add-bag-btn">Add To Bag</button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <button class="arrow-btn prod-right-btn"><i class="fa-solid fa-chevron-right"></i></button>
+        </div>
+    </section>
+
+    <footer class="main-footer" id="footer-section">
+        <div class="footer-logo">
+            KICK<span>SOUL</span>
+        </div>
+        
+        <div class="footer-socials">
+            <a href="#"><i class="fa-brands fa-instagram"></i></a>
+            <a href="#"><i class="fa-brands fa-tiktok"></i></a>
+            <a href="#"><i class="fa-brands fa-whatsapp"></i></a>
+        </div>
+        
+        <div class="footer-copyright">
+            &copy; 2026 KICKSOUL OFFICIAL STORE
+        </div>
+    </footer>
+
+    <div class="wishlist-panel" id="wishlistPanel">
+        <div class="wishlist-header">
+            <h2>MY WISHLIST</h2>
+            <div class="wishlist-header-right">
+                <button class="clear-all-btn">Clear All</button>
+                <i class="fa-solid fa-xmark close-wishlist-btn" id="closeWishlistBtn"></i>
+            </div>
+        </div>
+        
+        <div class="wishlist-content-empty">
+            <div class="empty-heart-icon">
+                <i class="fa-regular fa-heart"></i>
+            </div>
+            <h3>Your Wishlist is Empty</h3>
+            <p>Save your favorite sneakers here.</p>
+        </div>
+    </div>
+
+    <div class="options-modal-overlay" id="optionsModal">
+        <div class="options-modal-card">
+            <div class="modal-close-header">
+                <h3>SELECT OPTIONS</h3>
+                <i class="fa-solid fa-xmark" id="closeOptionsModal"></i>
+            </div>
+
+            <div class="modal-img-wrapper">
+                <img id="modalProductImg" src="img/piero-jogger.jpg" alt="Product Image">
+            </div>
+
+            <div class="modal-product-info">
+                <h2 id="modalProductName">Sneakers Pria Jogger</h2>
+                <span id="modalProductPrice" class="modal-price">Rp 424.800</span>
+            </div>
+
+            <div class="options-section">
+                <h4>Select Size</h4>
+                <div class="size-grid">
+                    <button class="size-btn">38</button>
+                    <button class="size-btn">39</button>
+                    <button class="size-btn">40</button>
+                    <button class="size-btn">41</button>
+                    <button class="size-btn">42</button>
+                    <button class="size-btn">43</button>
+                    <button class="size-btn">44</button>
+                    <button class="size-btn">45</button>
+                </div>
+            </div>
+
+            <div class="options-section">
+                <h4>Select Variant</h4>
+                <div class="variant-flex">
+                    <button class="variant-btn">Black/Fallen Rock/Gum</button>
+                    <button class="variant-btn">Biscott/Off White/Gum</button>
+                    <button class="variant-btn">Brown/Off White/Brown</button>
+                    <button class="variant-btn">Black/Brown/Black</button>
+                    <button class="variant-btn">Taupe/Off White/Deep Taupe</button>
+                </div>
+            </div>
+
+            <button class="modal-submit-bag-btn" id="modalSubmitBag">Add To Bag</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
