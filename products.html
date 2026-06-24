@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>All Products - Kicksoul</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+</head>
+<body>
+
+<div class="sidebar" id="sidebarMenu">
+    <div class="close-btn" id="closeMenuBtn">
+        <i class="fa-solid fa-xmark"></i>
+    </div>
+    
+    <ul class="sidebar-links">
+        <li><a href="index.html">HOME <i class="fa-solid fa-house"></i></a></li>
+        <li><a href="index.html#about-section">ABOUT US <i class="fa-regular fa-circle-info"></i></a></li>
+        <li class="active-link"><a href="products.html">OUR BRANDS <i class="fa-solid fa-chevron-down"></i></a></li>
+        <li><a href="#apparel-section">APPAREL <i class="fa-solid fa-chevron-down"></i></a></li>
+        <li><a href="index.html#hottest-drops">NEW DROPS <i class="fa-solid fa-bolt"></i></a></li>
+        <li><a href="#footer-section">CONTACT <i class="fa-solid fa-headset"></i></a></li>
+        
+        <li style="margin-top: 20px; border-top: 1px solid #1a1a1a; padding-top: 15px;">
+            <span onclick="eksekusiDownloadCSVLangsung()" style="color: #00cfff; font-weight: bold; cursor: pointer; display: flex; justify-content: space-between; align-items: center; text-transform: uppercase;">
+                DOWNLOAD REPORT <i class="fa-solid fa-file-csv"></i>
+            </span>
+        </li>
+    </ul>
+
+    <script>
+        function eksekusiDownloadCSVLangsung() {
+            try {
+                const dataPenjualan = JSON.parse(localStorage.getItem("salesData")) || [];
+
+                if (dataPenjualan.length === 0) {
+                    alert("Belum ada data penjualan yang terekam! Silakan lakukan simulasi transaksi checkout sampai sukses terlebih dahulu.");
+                    return;
+                }
+
+                const headers = ["Tanggal Transaksi", "Nama Pembeli", "No HP", "Alamat", "Nama Produk", "Varian", "Ukuran", "Harga Satuan", "Jumlah Beli", "Total Harga", "Metode Pembayaran"];
+                const barisCsv = [];
+                barisCsv.push(headers.join(",")); 
+
+                dataPenjualan.forEach(row => {
+                    const values = [
+                        `"${row.tanggal || ''}"`,
+                        `"${row.namaPembeli || ''}"`,
+                        `"${row.noHp || ''}"`,
+                        `"${row.alamat || ''}"`,
+                        `"${row.namaProduk || ''}"`,
+                        `"${row.varian || ''}"`,
+                        `"${row.ukuran || ''}"`,
+                        row.hargaSatuan || 0,
+                        row.jumlah || 0,
+                        row.totalHarga || 0,
+                        `"${row.metodeBayar || ''}"`
+                    ];
+                    barisCsv.push(values.join(","));
+                });
+
+                const kontenCsv = "\uFEFF" + barisCsv.join("\n");
+                const blob = new Blob([kontenCsv], { type: 'text/csv;charset=utf-8;' });
+                const url = URL.createObjectURL(blob);
+                
+                const linkDownload = document.createElement("a");
+                linkDownload.setAttribute("href", url);
+                linkDownload.setAttribute("download", "Laporan_Penjualan_Kicksoul_" + new Date().toISOString().split('T')[0] + ".csv");
+                linkDownload.style.display = 'none';
+                
+                document.body.appendChild(linkDownload);
+                linkDownload.click();
+                document.body.removeChild(linkDownload);
+
+                const sidebarMenu = document.getElementById("sidebarMenu");
+                const sidebarOverlay = document.getElementById("sidebarOverlay");
+                if (sidebarMenu) sidebarMenu.classList.remove("active");
+                if (sidebarOverlay) sidebarOverlay.classList.remove("active");
+
+            } catch (error) {
+                alert("Terjadi kesalahan: " + error.message);
+            }
+        }
+    </script>
+</div>
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <div class="top-bar">
+        GRATIS ONGKIR SELURUH INDONESIA MINIMAL BELANJA RP 500.000
+    </div>
+
+    <nav class="navbar">
+        <div class="menu-btn" id="openMenuBtn">
+            <i class="fa-solid fa-bars"></i>
+        </div>
+        <div class="logo">
+            KICK<span>SOUL</span>
+        </div>
+       <div class="nav-icons">
+            <div class="wishlist-nav-btn" id="openWishlistBtn">
+                <i class="fa-regular fa-heart"></i>
+                <span class="wishlist-text">WISHLIST</span>
+            </div>
+    
+            <div class="cart-nav-btn" id="openCartBtn">
+                <i class="fa-solid fa-bag-shopping"></i>
+                <span class="cart-text">CART</span>
+            </div>
+       </div>
+    </nav>
+
+    <header class="page-header">
+        <div class="header-overlay">
+            <h1 class="header-title">ALL PRODUCTS</h1>
+            <p class="header-subtitle">Local Pride Sneakers From Indonesia</p>
+            <div class="breadcrumb">
+                <a href="index.html">Home</a> / <span>All Products</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="products-page-container">
+
+        <!-- SECTION COMPASS -->
+        <section class="brand-group-section" id="compass-section">
+            <div class="brand-group-header">
+                <span class="sub-title">PRODUK TERBARU</span>
+                <h2 class="main-title">Compass - Sneakers</h2>
+            </div>
+            <div class="products-grid">
+                <div class="product-card">
+                    <div class="img-wrapper"><img src="assets/compass-tribune.png" alt="Compass Tribune"></div>
+                    <div class="product-info">
+                        <span class="brand-name">COMPASS</span>
+                        <h3>Tribune</h3>
+                        <span class="price">Rp 598.000</span>
+                        <div class="rating-sold">
+                            <div class="rating-badge"><i class="fa-solid fa-star"></i> <span>4.8</span></div>
+                            <span class="sold">· 1.3k sold</span>
+                        </div>
+                        <div class="action-buttons">
+                            <button class="wishlist-btn"><i class="fa-regular fa-heart"></i></button>
+                            <button class="add-bag-btn">Add to Bag</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="product-card">
+                    <!-- DISESUAIKAN: menggunakan ekstensi .jpg sesuai folder -->
+                    <div class="img-wrapper"><img src="assets/compass-velocity.jpg" alt="Compass Velocity"></div>
+                    <div class="product-info">
+                        <span class="brand-name">COMPASS</span>
+                        <h3>Velocity</h3>
+                        <span class="price">Rp 798.000</span>
+                        <div class="rating-sold">
+                            <div class="rating-badge"><i class="fa-solid fa-star"></i> <span>4.9</span></div>
+                            <span class="sold">· 1.5k sold</span>
+                        </div>
+                        <div class="action-buttons">
+                            <button class="wishlist-btn"><i class="fa-regular fa-heart"></i></button>
+                            <button class="add-bag-btn">Add to Bag</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="product-card">
+                    <div class="img-wrapper"><img src="assets/compass-retrograde.png" alt="Compass Retrograde"></div>
+                    <div class="product-info">
+                        <span class="brand-name">COMPASS</span>
+                        <h3>Retrograde</h3>
+                        <span class="price">Rp 491.900</span>
+                        <div class="rating-sold">
+                            <div class="rating-badge"><i class="fa-solid fa-star"></i> <span>4.7</span></div>
+                            <span class="sold">· 1.1k sold</span>
+                        </div>
+                        <div class="action-buttons">
+                            <button class="wishlist-btn"><i class="fa-regular fa-heart"></i></button>
+                            <button class="add-bag-btn">Add to Bag</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="brand-group-header sub-group" id="apparel-section">
+                <h2 class="main-title">Compass - Apparels</h2>
+            </div>
+            <div class="products-grid">
+                <div class="product-card">
+                    <!-- DISESUAIKAN: menggunakan nama file sompass-t-shirt.png sesuai folder -->
+                    <div class="img-wrapper"><img src="assets/sompass-t-shirt.png" alt="Compass T-Shirt"></div>
+                    <div class="product-info">
+                        <span class="brand-name">COMPASS</span>
+                        <h3>T-Shirt</h3>
+                        <span class="price">Rp 238.000</span>
+                        <div class="rating-sold">
+                            <div class="rating-badge"><i class="fa-solid fa-star"></i> <span>4.8</span></div>
+                            <span class="sold">· 1.1k sold</span>
+                        </div>
+                        <div class="action-buttons">
+                            <button class="wishlist-btn"><i class="fa-regular fa-heart"></i></button>
+                            <button class="add-bag-btn">Add to Bag</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="product-card">
+                    <!-- DISESUAIKAN: compass-jerseylsaway.png -->
+                    <div class="img-wrapper"><img src="assets/compass-jerseylsaway.png" alt="Jersey LS Away"></div>
+                    <div class="product-info">
+                        <span class="brand-name">COMPASS</span>
+                        <h3>Jersey LS Away</h3>
+                        <span class="price">Rp 438.000</span>
+                        <div class="rating-sold">
+                            <div class="rating-badge"><i class="fa-solid fa-star"></i> <span>4.9</span></div>
+                            <span class="sold">· 1.2k sold</span>
+                        </div>
+                        <div class="action-buttons">
+                            <button class="wishlist-btn"><i class="fa-regular fa-heart"></i></button>
+                            <button class="add-bag-btn">Add to Bag</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="product-card">
+                    <div class="img-wrapper"><img src="assets/compass-socks.png" alt="Socks"></div>
+                    <div class="product-info">
+                        <span class="brand-name">COMPASS</span>
+                        <h3>Socks</h3>
+                        <span class="price">Rp 98.000</span>
+                        <div class="rating-sold">
+                            <div class="rating-badge"><i class="fa-solid fa-star"></i> <span>4.9</span></div>
+                            <span class="sold">· 1.7k sold</span>
+                        </div>
+                        <div class="action-buttons">
+                            <button class="wishlist-btn"><i class="fa-regular fa-heart"></i></button>
+                            <button class="add-bag-btn">Add to Bag</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION PATROBAS -->
+        <section class="brand-group-section" id="patrobas-section">
+            <div class="brand-group-header">
+                <span class="sub-title">PRODUK TERBARU</span>
+                <h2 class="main-title">Patrobas - Sneakers</h2>
+            </div>
+            <div class="products-grid">
+                <div class="product-card">
+                    <!-- DISESUAIKAN: patrobas-nomad.png -->
+                    <div class="img-wrapper"><img src="assets/patrobas-nomad.png" alt="Nomad"></div>
+                    <div class="product-info">
+                        <span class="brand-name">PATROBAS</span>
+                        <h3>Nomad</h3>
+                        <span class="price">Rp 469.900</span>
+                        <div class="rating-sold">
+                            <div class="rating-badge"><i class="fa-solid fa-star"></i> <span>4.8</span></div>
+                            <span class="sold">· 2.2k sold</span>
+                        </div>
+                        <div class="action-buttons">
+                            <button class="wishlist-btn"><i class="fa-regular fa-heart"></i></button>
+                            <button class="add-bag-btn">Add to Bag</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="product-card">
+                    <!-- DISESUAIKAN: patrobas-bulky.png -->
+                    <div class="img-wrapper"><img src="assets/patrobas-bulky.png" alt="Bulky"></div>
+                    <div class="product-info">
+                        <span class="brand-name">PATROBAS</span>
+                        <h3>Bulky</h3>
+                        <span class="price">Rp 389.900</span>
+                        <div class="rating-sold">
+                            <div class="rating-badge"><i class="fa-solid fa-star"></i> <span>4.7</span></div>
+                            <span class="sold">· 1.5k sold</span>
+                        </div>
+                        <div class="action-buttons">
+                            <button class="wishlist-btn"><i class="fa-regular fa-heart"></i></button>
+                            <button class="add-bag-btn">Add to Bag</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="product-card">
+                    <!-- DISESUAIKAN: patrobas-cloud.png -->
+                    <div class="img-wrapper"><img src="assets/patrobas-cloud.png" alt="Cloud"></div>
+                    <div class="product-info">
+                        <span class="brand-name">PATROBAS</span>
+                        <h3>Cloud</h3>
+                        <span class="price">Rp 349.900</span>
+                        <div class="rating-sold">
+                            <div class="rating-badge"><i class="fa-solid fa-star"></i> <span>4.7</span></div>
+                            <span class="sold">· 1.3k sold</span>
+                        </div>
+                        <div class="action-buttons">
+                            <button class="wishlist-btn"><i class="fa-regular fa-heart"></i></button>
+                            <button class="add-bag-btn">Add to Bag</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="brand-group-header sub-group">
+                <h2 class="main-title">Patrobas - Sandals</h2>
+            </div>
+            <div class="products-grid">
+                <div class="product-card">
+                    <!-- DISESUAIKAN: patrobas-easesendal.png -->
+                    <div class="img-wrapper"><img src="assets/patrobas-easesendal.png" alt="Ease Sandal"></div>
+                    <div class="product-info">
+                        <span class="brand-name">PATROBAS</span>
+                        <h3>Ease Sandal</h3>
+                        <span class="price">Rp 99.900</span>
+                        <div class="rating-sold">
+                            <div class="rating-badge"><i class="fa-solid fa-star"></i> <span>4.8</span></div>
+                            <span class="sold">· 1.1k sold</span>
+                        </div>
+                        <div class="action-buttons">
+                            <button class="wishlist-btn"><i class="fa-regular fa-heart"></i></button>
+                            <button class="add-bag-btn">Add to Bag</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="product-card">
+                    <!-- DISESUAIKAN: patrobas-flip.png -->
+                    <div class="img-wrapper"><img src="assets/patrobas-flip.png" alt="Flip Sandal Recovery"></div>
+                    <div class="product-info">
+                        <span class="brand-name">PATROBAS</span>
+                        <h3>Flip Sandal Recovery</h3>
+                        <span class="price">Rp 109.900</span>
+                        <div class="rating-sold">
+                            <div class="rating-badge"><i class="fa-solid fa-star"></i> <span>4.8</span></div>
+                            <span class="sold">· 1k sold</span>
+                        </div>
+                        <div class="action-buttons">
+                            <button class="wishlist-btn"><i class="fa-regular fa-heart"></i></button>
+                            <button class="add-bag-btn">Add to Bag</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="product-card">
+                    <!-- DISESUAIKAN: patrobas-sandalsslide.png -->
+                    <div class="img-wrapper"><img src="assets/patrobas-sandalslide.png" alt="Sandal Slide"></div>
+                    <div class="product-info">
+                        <span class="brand-name">PATROBAS</span>
+                        <h3>Sandal Slide</h3>
+                        <span class="price">Rp 89.900</span>
+                        <div class="rating-sold">
+                            <div class="rating-badge"><i class="fa-solid fa-star"></i> <span>4.7</span></div>
+                            <span class="sold">· 980 sold</span>
+                        </div>
+                        <div class="action-buttons">
+                            <button class="wishlist-btn"><i class="fa-regular fa-heart"></i></button>
+                            <button class="add-bag-btn">Add to Bag</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION AEROSTREET -->
+        <section class="brand-group-section" id="aerostreet-section">
+            <div class="brand-group-header">
+                <span class="sub-title">PRODUK TERBARU</span>
+                <h2 class="main-title">Aerostreet - Sneakers</h2>
+            </div>
+            <div class="products-grid">
+                <div class="product-card">
+                    <!-- DISESUAIKAN: aerostreet-charlieballerina.png -->
+                    <div class="img-wrapper"><img src="assets/aerostreet-charlieballerina.png" alt="Cherie Ballerina"></div>
+                    <div class="product-info">
+                        <span class="brand-name">AEROSTREET</span>
+                        <h3>Cherie Ballerina Shoes</h3>
+                        <span class="price">Rp 179.900</span>
+                        <div class="rating-sold">
+                            <div class="rating-badge"><i class="fa-solid fa-star"></i> <span>4.9</span></div>
+                            <span class="sold">· 1.8k sold</span>
+                        </div>
+                        <div class="action-buttons">
+                            <button class="wishlist-btn"><i class="fa-regular fa-heart"></i></button>
+                            <button class="add-bag-btn">Add to Bag</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="product-card">
+                    <!-- DISESUAIKAN: aerostreet-denversneakers.png -->
+                    <div class="img-wrapper"><img src="assets/aerostreet-denversneakers.png" alt="Denver Sneakers"></div>
+                    <div class="product-info">
+                        <span class="brand-name">AEROSTREET</span>
+                        <h3>Denver Sneakers</h3>
+                        <span class="price">Rp 229.900</span>
+                        <div class="rating-sold">
+                            <div class="rating-badge"><i class="fa-solid fa-star"></i> <span>4.8</span></div>
+                            <span class="sold">· 1.5k sold</span>
+                        </div>
+                        <div class="action-buttons">
+                            <button class="wishlist-btn"><i class="fa-regular fa-heart"></i></button>
+                            <button class="add-bag-btn">Add to Bag</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="product-card">
+                    <!-- DISESUAIKAN: aerostreet-activelow.png -->
+                    <div class="img-wrapper"><img src="assets/aerostreet-activelow.png" alt="Active Low"></div>
+                    <div class="product-info">
+                        <span class="brand-name">AEROSTREET</span>
+                        <h3>Active Low</h3>
+                        <span class="price">Rp 269.900</span>
+                        <div class="rating-sold">
+                            <div class="rating-badge"><i class="fa-solid fa-star"></i> <span>4.7</span></div>
+                            <span class="sold">· 1.1k sold</span>
+                        </div>
+                        <div class="action-buttons">
+                            <button class="wishlist-btn"><i class="fa-regular fa-heart"></i></button>
+                            <button class="add-bag-btn">Add to Bag</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="brand-group-header sub-group">
+                <h2 class="main-title">Aerostreet - Apparels & Sandals</h2>
+            </div>
+            <div class="products-grid">
+                <div class="product-card">
+                    <!-- DISESUAIKAN: aerostreet-clara.png -->
+                    <div class="img-wrapper"><img src="assets/aerostreet-clara.png" alt="Sandal Slop Clara"></div>
+                    <div class="product-info">
+                        <span class="brand-name">AEROSTREET</span>
+                        <h3>Sandal Slop Clara</h3>
+                        <span class="price">Rp 89.900</span>
+                        <div class="rating-sold">
+                            <div class="rating-badge"><i class="fa-solid fa-star"></i> <span>4.8</span></div>
+                            <span class="sold">· 1k sold</span>
+                        </div>
+                        <div class="action-buttons">
+                            <button class="wishlist-btn"><i class="fa-regular fa-heart"></i></button>
+                            <button class="add-bag-btn">Add to Bag</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="product-card">
+                    <!-- DISESUAIKAN: aerostreet-fujikaos.png -->
+                    <div class="img-wrapper"><img src="assets/aerostreet-fujikaos.png" alt="Fuji Kaos Wanita"></div>
+                    <div class="product-info">
+                        <span class="brand-name">AEROSTREET</span>
+                        <h3>Fuji Kaos Wanita</h3>
+                        <span class="price">Rp 75.900</span>
+                        <div class="rating-sold">
+                            <div class="rating-badge"><i class="fa-solid fa-star"></i> <span>4.9</span></div>
+                            <span class="sold">· 1.1k sold</span>
+                        </div>
+                        <div class="action-buttons">
+                            <button class="wishlist-btn"><i class="fa-regular fa-heart"></i></button>
+                            <button class="add-bag-btn">Add to Bag</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="product-card">
+                    <!-- DISESUAIKAN: aerostreet-lexpolo.png -->
+                    <div class="img-wrapper"><img src="assets/aerostreet-lexpolo.png" alt="Lex Kaos Polo Scuba Pria"></div>
+                    <div class="product-info">
+                        <span class="brand-name">AEROSTREET</span>
+                        <h3>Lex Kaos Polo Scuba Pria</h3>
+                        <span class="price">Rp 109.900</span>
+                        <div class="rating-sold">
+                            <div class="rating-badge"><i class="fa-solid fa-star"></i> <span>4.9</span></div>
+                            <span class="sold">· 1.5k sold</span>
+                        </div>
+                        <div class="action-buttons">
+                            <button class="wishlist-btn"><i class="fa-regular fa-heart"></i></button>
+                            <button class="add-bag-btn">Add to Bag</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION GEOFF MAX -->
+        <section class="brand-group-section" id="geoffmax-section">
+            <div class="brand-group-header">
+                <span class="sub-title">PRODUK TERBARU</span>
+                <h2 class="main-title">Geoff Max - Sneakers</h2>
+            </div>
+            <div class="products-grid">
+                <div class="product-card">
+                    <!-- DISESUAIKAN: geoffmax-hunter.png -->
+                    <div class="img-wrapper"><img src="assets/geoffmax-hunter.png" alt="Hunter Trail"></div>
+                    <div class="product-info">
+                        <span class="brand-name">GEOFF MAX FOOTWEAR</span>
+                        <h3>Hunter Trail Running</h3>
+                        <span class="price">Rp 629.000</span>
+                        <div class="rating-sold">
+                            <div class="rating-badge"><i class="fa-solid fa-star"></i> <span>4.8</span></div>
+                            <span class="sold">· 1.6k sold</span>
+                        </div>
+                        <div class="action-buttons">
+                            <button class="wishlist-btn"><i class="fa-regular fa-heart"></i></button>
+                            <button class="add-bag-btn">Add to Bag</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="product-card">
+                    <!-- DISESUAIKAN: geoffmax-mxfaster.png -->
+                    <div class="img-wrapper"><img src="assets/geoffmax-mxfaster.png" alt="MX Faster"></div>
+                    <div class="product-info">
+                        <span class="brand-name">GEOFF MAX FOOTWEAR</span>
+                        <h3>MX Faster</h3>
+                        <span class="price">Rp 650.000</span>
+                        <div class="rating-sold">
+                            <div class="rating-badge"><i class="fa-solid fa-star"></i> <span>4.9</span></div>
+                            <span class="sold">· 2.3k sold</span>
+                        </div>
+                        <div class="action-buttons">
+                            <button class="wishlist-btn"><i class="fa-regular fa-heart"></i></button>
+                            <button class="add-bag-btn">Add to Bag</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="product-card">
+                    <!-- DISESUAIKAN: geoffmaxx-cruzaxel.png (Huruf x double sesuai folder) -->
+                    <div class="img-wrapper"><img src="assets/geoffmaxx-cruzaxel.png" alt="Cruz Axel"></div>
+                    <div class="product-info">
+                        <span class="brand-name">GEOFF MAX FOOTWEAR</span>
+                        <h3>Cruz Axel</h3>
+                        <span class="price">Rp 650.000</span>
+                        <div class="rating-sold">
+                            <div class="rating-badge"><i class="fa-solid fa-star"></i> <span>4.7</span></div>
+                            <span class="sold">· 1.3k sold</span>
+                        </div>
+                        <div class="action-buttons">
+                            <button class="wishlist-btn"><i class="fa-regular fa-heart"></i></button>
+                            <button class="add-bag-btn">Add to Bag</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="brand-group-header sub-group">
+                <h2 class="main-title">Geoff Max - Apparels</h2>
+            </div>
+            <div class="products-grid">
+                <div class="product-card">
+                    <!-- DISESUAIKAN: geoffmax-MaxAlpenNoiseflex.png -->
+                    <div class="img-wrapper"><img src="assets/geoffmax-MaxAlpenNoiseflex.png" alt="Max Alpen Noiseflex"></div>
+                    <div class="product-info">
+                        <span class="brand-name">GEOFF MAX FOOTWEAR</span>
+                        <h3>Max Alpen Noiseflex</h3>
+                        <span class="price">Rp 149.000</span>
+                        <div class="rating-sold">
+                            <div class="rating-badge"><i class="fa-solid fa-star"></i> <span>4.8</span></div>
+                            <span class="sold">· 777 sold</span>
+                        </div>
+                        <div class="action-buttons">
+                            <button class="wishlist-btn"><i class="fa-regular fa-heart"></i></button>
+                            <button class="add-bag-btn">Add to Bag</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="product-card">
+                    <!-- DISESUAIKAN: geoffmax-NastyHoodie.png -->
+                    <div class="img-wrapper"><img src="assets/geoffmax-NastyHoodie.png" alt="Nasty Hoodie"></div>
+                    <div class="product-info">
+                        <span class="brand-name">GEOFF MAX FOOTWEAR</span>
+                        <h3>Nasty Hoodie</h3>
+                        <span class="price">Rp 600.000</span>
+                        <div class="rating-sold">
+                            <div class="rating-badge"><i class="fa-solid fa-star"></i> <span>4.9</span></div>
+                            <span class="sold">· 678 sold</span>
+                        </div>
+                        <div class="action-buttons">
+                            <button class="wishlist-btn"><i class="fa-regular fa-heart"></i></button>
+                            <button class="add-bag-btn">Add to Bag</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="product-card">
+                    <!-- DISESUAIKAN: geoffmax-DuraSP.png -->
+                    <div class="img-wrapper"><img src="assets/geoffmax-DuraSP.png" alt="Dura SP"></div>
+                    <div class="product-info">
+                        <span class="brand-name">GEOFF MAX FOOTWEAR</span>
+                        <h3>Dura SP</h3>
+                        <span class="price">Rp 79.000</span>
+                        <div class="rating-sold">
+                            <div class="rating-badge"><i class="fa-solid fa-star"></i> <span>4.8</span></div>
+                            <span class="sold">· 1.1k sold</span>
+                        </div>
+                        <div class="action-buttons">
+                            <button class="wishlist-btn"><i class="fa-regular fa-heart"></i></button>
+                            <button class="add-bag-btn">Add to Bag</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION PIERO -->
+        <section class="brand-group-section" id="piero-section">
+            <div class="brand-group-header">
+                <span class="sub-title">PRODUK TERBARU</span>
+                <h2 class="main-title">Piero - Sneakers</h2>
+            </div>
+            <div class="products-grid">
+                <div class="product-card">
+                    <!-- DISESUAIKAN: piero-SneakersWanitaJogger.png -->
+                    <div class="img-wrapper"><img src="assets/piero-SneakersWanitaJogger.png" alt="Sneakers Wanita Jogger"></div>
+                    <div class="product-info">
+                        <span class="brand-name">PIERO</span>
+                        <h3>Sneakers Wanita Jogger</h3>
+                        <span class="price">Rp 414.860</span>
+                        <div class="rating-sold">
+                            <div class="rating-badge"><i class="fa-solid fa-star"></i> <span>4.7</span></div>
+                            <span class="sold">· 1.1k sold</span>
+                        </div>
+                        <div class="action-buttons">
+                            <button class="wishlist-btn"><i class="fa-regular fa-heart"></i></button>
+                            <button class="add-bag-btn">Add to Bag</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="product-card">
+                    <!-- DISESUAIKAN: piero-SneakersPriaJogger.png -->
+                    <div class="img-wrapper"><img src="assets/piero-SneakersPriaJogger.png" alt="Sneakers Pria Jogger"></div>
+                    <div class="product-info">
+                        <span class="brand-name">PIERO</span>
+                        <h3>Sneakers Pria Jogger</h3>
+                        <span class="price">Rp 424.800</span>
+                        <div class="rating-sold">
+                            <div class="rating-badge"><i class="fa-solid fa-star"></i> <span>4.8</span></div>
+                            <span class="sold">· 1.9k sold</span>
+                        </div>
+                        <div class="action-buttons">
+                            <button class="wishlist-btn"><i class="fa-regular fa-heart"></i></button>
+                            <button class="add-bag-btn">Add to Bag</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="product-card">
+                    <!-- DISESUAIKAN: piero-DBRUnite.png -->
+                    <div class="img-wrapper"><img src="assets/piero-DBR Unite.png" alt="DBR Unite"></div>
+                    <div class="product-info">
+                        <span class="brand-name">PIERO</span>
+                        <h3>DBR Unite</h3>
+                        <span class="price">Rp 354.820</span>
+                        <div class="rating-sold">
+                            <div class="rating-badge"><i class="fa-solid fa-star"></i> <span>4.8</span></div>
+                            <span class="sold">· 1.5k sold</span>
+                        </div>
+                        <div class="action-buttons">
+                            <button class="wishlist-btn"><i class="fa-regular fa-heart"></i></button>
+                            <button class="add-bag-btn">Add to Bag</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="brand-group-header sub-group">
+                <h2 class="main-title">Piero - Apparels & Sandals</h2>
+            </div>
+            <div class="products-grid">
+                <div class="product-card">
+                    <!-- DISESUAIKAN: piero-PunaRSDistorted.png -->
+                    <div class="img-wrapper"><img src="assets/piero-PunaRSDistorted.png" alt="Puna RS Distorted"></div>
+                    <div class="product-info">
+                        <span class="brand-name">PIERO</span>
+                        <h3>Puna RS Distorted</h3>
+                        <span class="price">Rp 89.900</span>
+                        <div class="rating-sold">
+                            <div class="rating-badge"><i class="fa-solid fa-star"></i> <span>4.7</span></div>
+                            <span class="sold">· 540 sold</span>
+                        </div>
+                        <div class="action-buttons">
+                            <button class="wishlist-btn"><i class="fa-regular fa-heart"></i></button>
+                            <button class="add-bag-btn">Add to Bag</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="product-card">
+                    <!-- DISESUAIKAN: piero-SandalsRyoKaneda.png -->
+                    <div class="img-wrapper"><img src="assets/piero-SandalsRyoKaneda.png" alt="Sandals Ryo Kaneda"></div>
+                    <div class="product-info">
+                        <span class="brand-name">PIERO</span>
+                        <h3>Sandals Ryo Kaneda</h3>
+                        <span class="price">Rp 139.900</span>
+                        <div class="rating-sold">
+                            <div class="rating-badge"><i class="fa-solid fa-star"></i> <span>4.8</span></div>
+                            <span class="sold">· 1.1k sold</span>
+                        </div>
+                        <div class="action-buttons">
+                            <button class="wishlist-btn"><i class="fa-regular fa-heart"></i></button>
+                            <button class="add-bag-btn">Add to Bag</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="product-card">
+                    <!-- DISESUAIKAN: piero-ClassicoMicroCrewSocks.png -->
+                    <div class="img-wrapper"><img src="assets/piero-ClassicoMicroCrewSocks.png" alt="Classico Micro Crew Socks"></div>
+                    <div class="product-info">
+                        <span class="brand-name">PIERO</span>
+                        <h3>Classico Micro Crew Socks</h3>
+                        <span class="price">Rp 23.880</span>
+                        <div class="rating-sold">
+                            <div class="rating-badge"><i class="fa-solid fa-star"></i> <span>4.7</span></div>
+                            <span class="sold">· 1.2k sold</span>
+                        </div>
+                        <div class="action-buttons">
+                            <button class="wishlist-btn"><i class="fa-regular fa-heart"></i></button>
+                            <button class="add-bag-btn">Add to Bag</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <div style="text-align: center; margin: 40px 0 60px 0;">
+        <a href="index.html" style="background: transparent; border: 1px solid #333; color: #fff; padding: 12px 30px; border-radius: 8px; text-decoration: none; font-weight: 600; transition: 0.3s;" onmouseover="this.style.borderColor='#777'" onmouseout="this.style.borderColor='#333'">← Back to Home</a>
+    </div>
+
+    <footer class="main-footer" id="footer-section">
+        <div class="footer-logo">KICK<span>SOUL</span></div>
+        <div class="footer-socials">
+            <a href="#"><i class="fa-brands fa-instagram"></i></a>
+            <a href="#"><i class="fa-brands fa-tiktok"></i></a>
+            <a href="#"><i class="fa-brands fa-whatsapp"></i></a>
+        </div>
+        <div class="footer-copyright">&copy; 2026 KICKSOUL OFFICIAL STORE</div>
+    </footer>
+
+    <div class="options-modal-overlay" id="optionsModal">
+        <div class="options-modal-card">
+            <div class="modal-close-header">
+                <h3>SELECT OPTIONS</h3>
+                <i class="fa-solid fa-xmark" id="closeOptionsModal"></i>
+            </div>
+
+            <div class="modal-img-wrapper">
+                <img id="modalProductImg" src="assets/piero-SneakersPriaJogger.png" alt="Product Image">
+            </div>
+
+            <div class="modal-product-info">
+                <h2 id="modalProductName">Sneakers Pria Jogger</h2>
+                <span id="modalProductPrice" class="modal-price">Rp 424.800</span>
+            </div>
+
+            <div class="options-section">
+                <h4>Select Size</h4>
+                <div class="size-grid">
+                    <button class="size-btn">38</button>
+                    <button class="size-btn">39</button>
+                    <button class="size-btn">40</button>
+                    <button class="size-btn">41</button>
+                    <button class="size-btn">42</button>
+                    <button class="size-btn">43</button>
+                    <button class="size-btn">44</button>
+                    <button class="size-btn">45</button>
+                </div>
+            </div>
+
+            <div class="options-section">
+                <h4>Select Variant</h4>
+                <div class="variant-flex">
+                    <button class="variant-btn">Black/Fallen Rock/Gum</button>
+                    <button class="variant-btn">Biscott/Off White/Gum</button>
+                    <button class="variant-btn">Brown/Off White/Brown</button>
+                    <button class="variant-btn">Black/Brown/Black</button>
+                    <button class="variant-btn">Taupe/Off White/Deep Taupe</button>
+                </div>
+            </div>
+
+            <button class="modal-submit-bag-btn" id="modalSubmitBag">Add To Bag</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
